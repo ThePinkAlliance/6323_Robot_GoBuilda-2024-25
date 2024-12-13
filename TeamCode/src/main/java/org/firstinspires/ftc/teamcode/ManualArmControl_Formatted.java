@@ -76,6 +76,7 @@ public class ManualArmControl_Formatted extends LinearOpMode {
     public DcMotor armMotor = null; //the arm motor
     public CRServo intake = null; //the active intake servo
     public Servo wrist = null; //the wrist servo
+    public DcMotor extendMotor = null;
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -138,10 +139,10 @@ public class ManualArmControl_Formatted extends LinearOpMode {
         boolean wasUsingPower = true;
 
         /* Define and Initialize Motors */
-        leftDrive = hardwareMap.get(DcMotor.class, "left_front_drive"); // the left drivetrain motor
-        rightDrive = hardwareMap.get(DcMotor.class, "right_front_drive"); // the right drivetrain motor
-        armMotor = hardwareMap.get(DcMotor.class, "left_arm"); // the arm motor
-
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive"); // the left drivetrain motor
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive"); // the right drivetrain motor
+        armMotor = hardwareMap.get(DcMotor.class, "arm_lift"); // the arm motor
+        extendMotor = hardwareMap.get(DcMotor.class, "arm_extend");
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
         for this robot, we reverse the right motor. */
@@ -165,12 +166,11 @@ public class ManualArmControl_Formatted extends LinearOpMode {
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         /* Define and initialize servos. */
-        intake = hardwareMap.get(CRServo.class, "intake");
-        wrist = hardwareMap.get(Servo.class, "wrist");
+        intake = hardwareMap.get(CRServo.class, "arm_collect");
+        wrist = hardwareMap.get(Servo.class, "arm_rotate");
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-        wrist.setPosition(WRIST_FOLDED_LEFT);
 
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
@@ -187,7 +187,8 @@ public class ManualArmControl_Formatted extends LinearOpMode {
             forward = -gamepad1.left_stick_y;
             rotate = gamepad1.right_stick_x;
 
-
+            //set power to extendMotor to the value of gamepad2 right_stick_y
+            extendMotor.setPower(gamepad2.right_stick_y);
             /* Here we "mix" the input channels together to find the power to apply to each motor.
             The both motors need to be set to a mix of how much you're retesting the robot move
             forward, and how much you're requesting the robot turn. When you ask the robot to rotate
