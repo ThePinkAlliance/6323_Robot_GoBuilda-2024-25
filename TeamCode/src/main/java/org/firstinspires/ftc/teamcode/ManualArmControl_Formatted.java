@@ -184,7 +184,7 @@ public class ManualArmControl_Formatted extends LinearOpMode {
 
             /* Set the drive and turn variables to follow the joysticks on the gamepad.
             the joysticks decrease as you push them up. So reverse the Y axis. */
-            forward = -gamepad1.left_stick_y;
+            forward = gamepad1.left_stick_y;
             rotate = gamepad1.right_stick_x;
 
             //set power to extendMotor to the value of gamepad2 right_stick_y
