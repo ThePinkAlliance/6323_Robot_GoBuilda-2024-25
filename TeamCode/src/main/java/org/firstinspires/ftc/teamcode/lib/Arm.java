@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Arm {
-    private DcMotor arm_lift;
-    private DcMotorEx arm_extend_motor;
-    private Servo arm_rotate;
-    private CRServo arm_collector;
+    public DcMotor arm_lift;
+    public DcMotorEx arm_extend_motor;
+    public Servo arm_rotate;
+    public CRServo arm_collector;
     public Arm(HardwareMap map) {
         this.arm_extend_motor = map.get(DcMotorEx.class, "arm_extend");
         this.arm_lift = map.get(DcMotor.class, "arm_lift");
@@ -31,7 +31,7 @@ public class Arm {
         this.arm_lift.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public double get_lift_position() {
+    public int get_lift_position() {
         return this.arm_lift.getCurrentPosition();
     }
 
@@ -41,6 +41,10 @@ public class Arm {
 
     public double get_rotate_position() {
         return this.arm_rotate.getPosition();
+    }
+
+    public double get_arm_target_position() {
+        return this.arm_lift.getTargetPosition();
     }
 
     public void set_extend_position(int position) {
@@ -69,5 +73,9 @@ public class Arm {
 
     public void set_extend_mode(DcMotor.RunMode mode) {
         this.arm_extend_motor.setMode(mode);
+    }
+
+    public void set_arm_mode(DcMotor.RunMode mode) {
+        this.arm_lift.setMode(mode);
     }
 }
