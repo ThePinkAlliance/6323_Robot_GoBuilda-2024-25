@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.lib.Arm;
 import org.firstinspires.ftc.teamcode.lib.Drivetrain;
 
-@TeleOp(name = "Test Teleop")
-public class Teleop extends OpMode {
+@TeleOp(name = "Teleop: Position-based Arm Control", group = "Teleop")
+public class PositionalArmControlArcade extends OpMode {
     Arm arm;
     Drivetrain drivetrain;
 

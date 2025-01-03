@@ -27,35 +27,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/*
- * This OpMode illustrates the concept of driving a path based on time.
- * The code is structured as a LinearOpMode
- *
- * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: RobotAutoDriveByEncoder;
- *
- *   The desired path in this example is:
- *   - Drive forward for 3 seconds
- *   - Spin right for 1.3 seconds
- *   - Drive Backward for 1 Second
- *
- *  The code is written in a simple form with no optimizations.
- *  However, there are several ways that this type of sequence could be streamlined,
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
+@Autonomous(name="Auto: Drive To Observation Zone", group="Auto")
 
-@Autonomous(name="Robot: Auto Drive By Time", group="Robot")
-
-public class DriveToObservationZone extends LinearOpMode {
+public class TimedDriveToObservationZone extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor         leftDrive   = null;
@@ -98,25 +79,7 @@ public class DriveToObservationZone extends LinearOpMode {
             telemetry.update();
         }
 
-//        // Step 2:  Spin right for 1.3 seconds
-//        leftDrive.setPower(TURN_SPEED);
-//        rightDrive.setPower(-TURN_SPEED);
-//        runtime.reset();
-//        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
-//            telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-//
-//        // Step 3:  Drive Backward for 1 Second
-//        leftDrive.setPower(-FORWARD_SPEED);
-//        rightDrive.setPower(-FORWARD_SPEED);
-//        runtime.reset();
-//        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-//            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-//            telemetry.update();
-//        }
-
-        // Step 4:  Stop
+        // Stop
         leftDrive.setPower(0);
         rightDrive.setPower(0);
 
