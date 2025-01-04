@@ -36,8 +36,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import java.util.concurrent.Executors;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
+import java.util.concurrent.ExecutorService;
 
 /*
 * WARNING:
@@ -76,12 +79,11 @@ public class HighBasketScore extends LinearOpMode {
     static final double     EXTEND_SPEED           = 0.7;
     static final double     ROTATE_SPEED           = 0.7;
     static final double     MAX_EXTENSION = 45; //max length robot can extend arm to from initial length
-    static final double     straightup_angle = 12; //max angle robot can rotate arm to from initial orientation  TODO: adjust this to actual value once known
-    static final double     MAX_LIFT = 14; //max distance robot can lift the arm to from initial position TODO: adjust this to actual value once known
+    static final int HIGH_BASKET_POSITION = -1800;
+    static ExecutorService executor = Executors.newSingleThreadExecutor();
     @Override
     public void runOpMode() {
-        // Initialize the drive system variables.
-//        claw_servo = hardwareMap.get(Servo.class, "claw_servo");
+
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive"); // the left drivetrain motor
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive"); // the right drivetrain motor
         armMotor = hardwareMap.get(DcMotor.class, "arm_lift"); // the arm motor
@@ -121,28 +123,45 @@ public class HighBasketScore extends LinearOpMode {
         intake.setPower(1);
         sleep(1000);
         intake.setPower(0);
-        encoderMove(armMotor,ROTATE_SPEED,straightup_angle,10.0); //rotate arm to straightup angle
-        encoderMove(extendMotor, LIFT_SPEED,MAX_LIFT,6.0); //raise arm lift to maxlift
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        Thread targetPositionThread = new Thread(() -> {
+            while (true) {
+                armMotor.setPower(0.1);
+                telemetry.addData("ITS OUTSIDE", null);
+                telemetry.update();
+                armMotor.setTargetPosition(HIGH_BASKET_POSITION);
+            }
+        });
+        targetPositionThread.start();
+        while (true) {
+            armMotor.setPower(0.1);
+            telemetry.addData("ITS OUTSIDE", null);
+            telemetry.update();
+            armMotor.setTargetPosition(HIGH_BASKET_POSITION);
+        }
+//        encoderMove(armMotor,ROTATE_SPEED,HIGH_BASKET_POSITION / COUNTS_PER_INCH,10.0); //rotate arm to straightup angle
+//        encoderMove(extendMotor, LIFT_SPEED,MAX_LIFT,6.0); //raise arm lift to maxlift
         /*encoderMove(extendArmMotor, EXTEND_SPEED,MAX_EXTENSION, 5.0);*/ //extend arm to max_extension
-        encoderDrive(0.6, 14.5, 14.5, 10); // drive forward to basket 15 inches
+//        encoderDrive(0.6, 14.5, 14.5, 10); // drive forward to basket 15 inches
         //encoderDriveV2(0.3, 15, 0, 0, 15, 10); //moves the robot to the right
-        encoderDrive(0.6, 5, -5, 10); // rotate the robot to face the basket
-        encoderMove(armMotor,ROTATE_SPEED,3, 10.0); // rotate arm to be over the basket
+//        encoderDrive(0.6, 5, -5, 10); // rotate the robot to face the basket
+//        encoderMove(armMotor,ROTATE_SPEED,3, 10.0); // rotate arm to be over the basket
 //        claw_servo.setPosition(0); //drop the sample in the basket
-        intake.setPower(-1);
-        sleep(500);
-        intake.setPower(0);
-        encoderMove(armMotor, ROTATE_SPEED,-12, 10.0); //rotate arm away from basket
-        encoderDrive(0.6,-6,-6,10.0); //move slightly back from basket before lowering lift
-        encoderMove(extendMotor,LIFT_SPEED, -(MAX_LIFT / 2), 10.0); //lower lift to be about half the max height
-        encoderDrive(0.6,45,-45,10.0); //rotate 235-degrees toward ascent zone
-        encoderDrive(0.6,52,52,10); //drive a little bit
-        encoderDrive(0.8,-10,10,10); //turn a bit to touch the bar
-        encoderMove(armMotor, ROTATE_SPEED,15, 10.0); //rotate arm so that it touches the bar
-        encoderDrive(0.6,6,6,10); //move a little bit if arm did not touch bar
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);  // pause to display final telemetry message.
+//        intake.setPower(-1);
+//        sleep(500);
+//        intake.setPower(0);
+//        encoderMove(armMotor, ROTATE_SPEED,-12, 10.0); //rotate arm away from basket
+//        encoderDrive(0.6,-6,-6,10.0); //move slightly back from basket before lowering lift
+//        encoderMove(extendMotor,LIFT_SPEED, -(MAX_LIFT / 2), 10.0); //lower lift to be about half the max height
+//        encoderDrive(0.6,45,-45,10.0); //rotate 235-degrees toward ascent zone
+//        encoderDrive(0.6,52,52,10); //drive a little bit
+//        encoderDrive(0.8,-10,10,10); //turn a bit to touch the bar
+//        encoderMove(armMotor, ROTATE_SPEED,15, 10.0); //rotate arm so that it touches the bar
+//        encoderDrive(0.6,6,6,10); //move a little bit if arm did not touch bar
+//        telemetry.addData("Path", "Complete");
+//        telemetry.update();
+//        sleep(1000);  // pause to display final telemetry message.
     }
 
     /*

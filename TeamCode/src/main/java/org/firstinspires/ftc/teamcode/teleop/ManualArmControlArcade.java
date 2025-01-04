@@ -86,9 +86,9 @@ public class ManualArmControlArcade extends LinearOpMode {
     final double INTAKE_DEPOSIT = 0.5;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-    final double WRIST_FOLDED_CENTER = 0.4333;
+    final double WRIST_FOLDED_CENTER = 0.433;
 //    final double WRIST_FOLDED_LEFT = 0.05;
-    final double WRIST_FOLDED_LEFT = WRIST_FOLDED_CENTER + (WRIST_FOLDED_CENTER / 2);
+    final double WRIST_FOLDED_LEFT = 1.0;
 
     @Override
     public void runOpMode() {
@@ -109,6 +109,9 @@ public class ManualArmControlArcade extends LinearOpMode {
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive"); // the right drivetrain motor
         armMotor = hardwareMap.get(DcMotor.class, "arm_lift"); // the arm motor
         extendMotor = hardwareMap.get(DcMotor.class, "arm_extend");
+        /* Define and initialize servos. */
+        intake = hardwareMap.get(CRServo.class, "arm_collect");
+        wrist = hardwareMap.get(Servo.class, "arm_rotate");
 
         /* Most skid-steer/differential drive robots require reversing one motor to drive forward.
         for this robot, we reverse the right motor. */
@@ -130,10 +133,6 @@ public class ManualArmControlArcade extends LinearOpMode {
         armMotor.setTargetPosition(0);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        /* Define and initialize servos. */
-        intake = hardwareMap.get(CRServo.class, "arm_collect");
-        wrist = hardwareMap.get(Servo.class, "arm_rotate");
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
