@@ -224,7 +224,14 @@ public class ManualArmControlArcade extends LinearOpMode {
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else {
                 wasUsingPower = true;
-                armMotor.setPower(gamepad2.left_stick_y);
+
+                if (gamepad2.right_bumper) {
+                    armMotor.setPower(gamepad2.left_stick_y /2);
+                } else {
+                    armMotor.setPower(gamepad2.left_stick_y);
+                }
+
+
                 armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
 
