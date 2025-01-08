@@ -91,7 +91,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //TODO: Test this and modify it until it works!
 //TODO: Modify this to use the Arm and Drivetrain classes!
 @Autonomous(name="Robot: Auto Drive By Gyro", group="Robot")
-@Disabled
+
 public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */

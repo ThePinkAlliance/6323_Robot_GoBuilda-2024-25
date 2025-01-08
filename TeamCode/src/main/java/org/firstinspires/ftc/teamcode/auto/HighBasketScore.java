@@ -81,6 +81,7 @@ public class HighBasketScore extends LinearOpMode {
     static final double     MAX_EXTENSION = 45; //max length robot can extend arm to from initial length
     static final int HIGH_BASKET_POSITION = -1800;
     static ExecutorService executor = Executors.newSingleThreadExecutor();
+    public int new_var = 0;
     @Override
     public void runOpMode() {
 
@@ -124,22 +125,35 @@ public class HighBasketScore extends LinearOpMode {
         sleep(1000);
         intake.setPower(0);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        Thread targetPositionThread = new Thread(() -> {
-            while (true) {
-                armMotor.setPower(0.1);
-                telemetry.addData("ITS OUTSIDE", null);
-                telemetry.update();
-                armMotor.setTargetPosition(HIGH_BASKET_POSITION);
-            }
-        });
-        targetPositionThread.start();
-        while (true) {
-            armMotor.setPower(0.1);
-            telemetry.addData("ITS OUTSIDE", null);
+        armMotor.setTargetPosition(HIGH_BASKET_POSITION);
+//        Thread targetPositionThread = new Thread(() -> {
+//            while (opModeIsActive()) {
+//                new_var += 1;
+//                telemetry.addData("", new_var);
+//                telemetry.update();
+//                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                armMotor.setTargetPosition(-1500);
+//                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//        });
+        while (opModeIsActive()) {
+            new_var += 1;
+            telemetry.addData("", new_var);
             telemetry.update();
-            armMotor.setTargetPosition(HIGH_BASKET_POSITION);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor.setTargetPosition(-1500);
+            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+//        targetPositionThread.start();
+        while (opModeIsActive()) {
+            continue;
+        }
+//        while (true) {
+//            armMotor.setPower(0.1);
+//            telemetry.addData("ITS OUTSIDE", null);
+//            telemetry.update();
+//            armMotor.setTargetPosition(HIGH_BASKET_POSITION);
+//        }
 //        encoderMove(armMotor,ROTATE_SPEED,HIGH_BASKET_POSITION / COUNTS_PER_INCH,10.0); //rotate arm to straightup angle
 //        encoderMove(extendMotor, LIFT_SPEED,MAX_LIFT,6.0); //raise arm lift to maxlift
         /*encoderMove(extendArmMotor, EXTEND_SPEED,MAX_EXTENSION, 5.0);*/ //extend arm to max_extension
