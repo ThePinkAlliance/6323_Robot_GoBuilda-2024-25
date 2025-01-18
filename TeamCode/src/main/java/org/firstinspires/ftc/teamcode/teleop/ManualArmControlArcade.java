@@ -83,7 +83,7 @@ public class ManualArmControlArcade extends LinearOpMode {
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     final double INTAKE_COLLECT = -1.0;
     final double INTAKE_OFF = 0.0;
-    final double INTAKE_DEPOSIT = 0.5;
+    final double INTAKE_DEPOSIT = 1.0;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     final double WRIST_FOLDED_CENTER = 0.433;
@@ -153,7 +153,14 @@ public class ManualArmControlArcade extends LinearOpMode {
             rotate = gamepad1.right_stick_x;
 
             //set power to extendMotor to the value of gamepad2 right_stick_y
-            extendMotor.setPower(gamepad2.right_stick_y);
+            if (gamepad2.dpad_left) {
+                extendMotor.setPower(1);
+            } else if (gamepad2.dpad_right) {
+                extendMotor.setPower(-1);
+            } else extendMotor.setPower(0);
+
+
+
             /* Here we "mix" the input channels together to find the power to apply to each motor.
             The both motors need to be set to a mix of how much you're retesting the robot move
             forward, and how much you're requesting the robot turn. When you ask the robot to rotate
@@ -169,6 +176,14 @@ public class ManualArmControlArcade extends LinearOpMode {
                 left /= max;
                 right /= max;
             }
+
+            if (gamepad1.right_bumper) {
+                left = left /2;
+                right = right /2;
+            }
+
+
+
 
             /* Set the motor power to the variables we've mixed and normalized */
             leftDrive.setPower(left);
@@ -189,9 +204,9 @@ public class ManualArmControlArcade extends LinearOpMode {
             one cycle. Which can cause strange behavior. */
 
             if (gamepad2.a) {
-                intake.setPower(INTAKE_COLLECT);
-            } else if (gamepad2.x) {
                 intake.setPower(INTAKE_OFF);
+            } else if (gamepad2.x) {
+                intake.setPower(INTAKE_COLLECT);
             } else if (gamepad2.b) {
                 intake.setPower(INTAKE_DEPOSIT);
             }
@@ -206,34 +221,16 @@ public class ManualArmControlArcade extends LinearOpMode {
                 wrist.setPosition(WRIST_FOLDED_CENTER);
             }
 
-            if (gamepad2.left_stick_y >= -0.1 && gamepad2.left_stick_y <= 0.1) {
-                /* We are using wasUsingPower to keep the arm at it's last position before it went into the idle range.
-                This happens by setting wasUsingPower to TRUE when we are using setPower, then when the joystick goes into the idle range,
-                we check if wasUsingPower is true, which is true the first time it transfers from being outside the range to inside the range.
-                If it is true, we set armLastPosition to the current arm position, then we set wasUsingPower to false, so that we don't call it again
-                while joystick is still inside idle range. When the joystick goes outside idle range, then we set wasUsingPower to true again.
-                Allowing our idle range statement to be able to function correctly the next time.
-                */
-
-                if (wasUsingPower) {
-                    armLastPosition = armMotor.getCurrentPosition();
-                    wasUsingPower = false;
-                }
-
-                armMotor.setTargetPosition(armLastPosition);
-                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (gamepad2.dpad_up) {
+                armMotor.setPower(1);
+            } else if (gamepad2.dpad_down) {
+                armMotor.setPower(-1);
             } else {
-                wasUsingPower = true;
-
-                if (gamepad2.right_bumper) {
-                    armMotor.setPower(gamepad2.left_stick_y /2);
-                } else {
-                    armMotor.setPower(gamepad2.left_stick_y);
-                }
-
-
-                armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                armMotor.setPower(0);
             }
+
+
+
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
             if (((DcMotorEx) armMotor).isOverCurrent()) {
@@ -243,7 +240,7 @@ public class ManualArmControlArcade extends LinearOpMode {
             /* Send telemetry to the driver of the arm's current position and target position */
             telemetry.addData("armTarget: ", armMotor.getTargetPosition());
             telemetry.addData("arm Encoder: ", armMotor.getCurrentPosition());
-            telemetry.addData("left_stick_y", gamepad2.left_stick_y);
+            telemetry.addData("dpad_up", gamepad2.dpad_up);
             telemetry.addData("armLastPosition", armLastPosition);
             telemetry.addData("wasUsingPower", wasUsingPower);
             telemetry.update();
