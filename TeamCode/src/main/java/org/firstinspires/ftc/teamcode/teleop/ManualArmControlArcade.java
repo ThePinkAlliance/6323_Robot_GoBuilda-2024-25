@@ -129,14 +129,8 @@ public class ManualArmControlArcade extends LinearOpMode {
         /* This sets the maximum current that the control hub will apply to the arm before throwing a flag. */
         ((DcMotorEx) armMotor).setCurrentAlert(5, CurrentUnit.AMPS);
 
-        // Position 0 is the position that the arm starts at.
-        armMotor.setTargetPosition(0);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
-
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
         telemetry.update();
@@ -178,8 +172,8 @@ public class ManualArmControlArcade extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper) {
-                left = left /2;
-                right = right /2;
+                left = left *0.35;
+                right = right *0.35;
             }
 
 
@@ -217,7 +211,7 @@ public class ManualArmControlArcade extends LinearOpMode {
 
             if (gamepad2.left_bumper) {
                 wrist.setPosition(WRIST_FOLDED_LEFT);
-            } else if (gamepad2.y) {
+            } else if (gamepad2.right_bumper) {
                 wrist.setPosition(WRIST_FOLDED_CENTER);
             }
 
@@ -228,6 +222,7 @@ public class ManualArmControlArcade extends LinearOpMode {
             } else {
                 armMotor.setPower(0);
             }
+
 
 
 
